@@ -66,7 +66,9 @@ for i1 in fid:
 for j in range(K):
 	print j
 	i=j+1
-	with open("DictC4_%s.txt"%i, "wb") as myFile:
+
+	# change 3 to suitable r as required
+	with open("DictC3_%s.txt"%i, "wb") as myFile:
 		pickle.dump(Gdist[j], myFile)
 	myFile.close()
 	
