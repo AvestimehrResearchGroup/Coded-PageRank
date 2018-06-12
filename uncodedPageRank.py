@@ -16,9 +16,9 @@ comm = MPI.COMM_WORLD
 rank = comm.Get_rank()
 size = comm.Get_size()
 
-K=10
-N=12600
-prank0=1.0/N;
+K=10 # number of workers
+N=12600 # number of graph nodes
+prank0=1.0/N; 
 mach=[]
 for j in range(K):
 	mach.append(j)
