@@ -32,7 +32,6 @@ if rank==0:
 	timeMap=max(recvmsg1[1:])
 	print 'map',timeMap
 
-
 	recvmsg1 = comm.gather(0, root=0)
 	timeEncoding=max(recvmsg1[1:])
 	print 'encode and pack',timeEncoding
@@ -53,46 +52,41 @@ if rank==0:
 	timeReduce=max(recvmsg1[1:])# +sum(recvmsg1[1:])+max(recvmsg1[1:])
 	print 'reduce',timeReduce
 
-	 
 else:
-	print 'worker',rank
-					
 	################################## Creating workerComm ##################################
 	workerComm = comm.Split( 1, rank );
 	
 	###################################### Variables ########################################
 	# nodes indexed from 0 to N-1
-	fid=[] # list of all files (1,2,...,kcr) 
-	WSubsetR={} # dictionary with r-sized subset id (fid) and value as the corresponding list
-	WSubsetS=[] # dictionary with s-sized subset id and value as the corresponding list 
-	fidWSet={} # dictionary key=list of nodes in the file id, the node content from the vMapDict,value=fid (1,...,kcr) 
-	fidNodes={} # list of nodes in fid 
-	inputPartitionCollection={} # dictionary to store the IVs as packed strings, key=(fid(1,2,...),destid(1,2,...),1=key/2=value)
-	encodePreData={} # key(nsid,fid,destid,rankChunk(corresponding rank from s sized set list,1/2)) value1/2(numpy keys or IVs)
-	encodeDataSend={} # dictionary of dictionaries key(nsid) value(a dictionary with keys(rank,destid,key=1,value=2,size))
-	enDataRecv={} # dictionary of dictionaries key(nsid,source server rank) value(a dictionary with keys(rank,destid,key,value,size))
-	enDataRecv1={} # dictionary of dictionaries key(nsid,source server rank) value(a dictionary with keys(rank,destid,key,value,size))
-	PrankMap={} # store the current page rank of the nodes in the vMapDict
-	PrankReduce={} # computing the updated page ranks obtained from intermediate values
-	LocalList={} # to store the locacl lists of keys and corresponding prank contributions, keys(1 for keys, 2 for values)
+	fid=[]  
+	WSubsetR={} 
+	WSubsetS=[] 
+	fidWSet={} 
+	fidNodes={}  
+	inputPartitionCollection={} 
+	encodePreData={} 
+	encodeDataSend={} 
+	enDataRecv={} 
+	enDataRecv1={} 
+	PrankMap={} 
+	PrankReduce={} 
+	LocalList={} 
 	keyDict={}
 	valueDict={}
-	pval=None # temporary storage for the IV contribution to each neighbour in map stage
-	lineSize=None # store the length of packed string: calcsize('id') (node id,pval)
-	ltemp1=[] # temporary list/tuple/set
-	ltemp2=[] # temporary list/tuple/set
-	ltemp3=[] # temporary list/tuple/set 
-	ltemp4=[] # temporary list/tuple/set
-	destPrank=[None]*(K) # to store the dictionary for updating the pagerank values at the mapping servers 
-	srcPrank=[None]*(K) # to store the dictionary for receiving the updated pageranks from the reducer servers 
-	multicastGroupMap={} # to store the multicast groups splitters
-	i1=0 # an integer iterator
-	i2=0 # an integer iterator
-	i3=0 # an integer iterator
-	i4=0 # an integer iterator
-	i5=0 # an integer iterator
-	i6=0 # an integer iterator
-	maxnumber=None # to store the floor(number of elements in the IV/r) 
+	ltemp1=[] 
+	ltemp2=[] 
+	ltemp3=[]  
+	ltemp4=[] 
+	destPrank=[None]*(K) 
+	srcPrank=[None]*(K) 
+	multicastGroupMap={} 
+	i1=0 
+	i2=0 
+	i3=0 
+	i4=0 
+	i5=0 
+	i6=0 
+	maxnumber=None 
 	kcr=int(gmpy2.comb(K,r))
 	g=N/kcr
 	
@@ -287,7 +281,7 @@ else:
 	t1=time.time()-t0
 	recvmsg1 = comm.gather(t1, root=0)
 
-	###########################################Shuffle#############################################
+	########################################### Shuffle #############################################
 	workerComm.Barrier()
 	# Subset s-sized by subset s-sized
 	t0=time.time()
@@ -337,7 +331,7 @@ else:
 	enDataRecv1.clear()
 	'''
 
-	##########################################Decoding############################################
+	########################################## Decoding ############################################
 	# Obtain local values from the files in memory
 	# append function cannot combine two lists
 	workerComm.Barrier()
@@ -353,7 +347,7 @@ else:
 			continue
 	t01=time.time()-t0
 
-	################################### Clear inputPartitionCollection if necessary##########################
+	################################### Clear inputPartitionCollection if necessary ##########################
 	inputPartitionCollection=None
 	# gc.collect()
 	# Obtain values from other machines
@@ -391,7 +385,7 @@ else:
 	t1=time.time()-t0+t01
 	recvmsg1 = comm.gather(t1, root=0)
 
-	###################################Reduce Phase####################################
+	################################### Reduce Phase ####################################
 	workerComm.Barrier()
 	t0=time.time()
 	for kcount in keyDict:
