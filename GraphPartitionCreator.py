@@ -11,7 +11,7 @@ import cPickle as pickle
 import gmpy2
 import math
 
-#################Generate an Erdos Renyi graph sample with given parameters, followed by partitioning into worker dictionaries#############
+#################create a subgraph and then partition and then create worker dictionaries#############
 
 K=10
 N=12600
